@@ -1,5 +1,50 @@
 import 'package:flutter/material.dart';
 
+class BackgroundImage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Imagen de fondo
+        Image.asset (
+          'assets/images/be.jpg',
+          fit: BoxFit.cover,
+        ),
+        // Contenido en la parte superior
+        Container(
+          color: Colors.black54, // Fondo semi-transparente
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Bienvenido a la App de Citas Médicas',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+            Text(
+              'Agende su cita a continuación',
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20),
+            Expanded(child: AppointmentForm()), // Formulario de citas
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class AppointmentForm extends StatefulWidget {
   @override
   _AppointmentFormState createState() => _AppointmentFormState();
@@ -45,13 +90,16 @@ class _AppointmentFormState extends State<AppointmentForm> {
         children: [
           Text(
             'Nombre:',
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 18, color: Colors.white),
           ),
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Ingresa tu nombre',
+              hintStyle: TextStyle(color: Colors.white70),
+              filled: true,
+              fillColor: Colors.white,
             ),
           ),
           SizedBox(height: 20),
@@ -64,7 +112,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
                   children: [
                     Text(
                       'Fecha:',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                     GestureDetector(
                       onTap: () => _selectDate(context),
@@ -73,6 +121,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
                         ),
                         child: Text(
                           _selectedDate == null
@@ -92,7 +141,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
                   children: [
                     Text(
                       'Hora:',
-                      style: TextStyle(fontSize: 18),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                     GestureDetector(
                       onTap: () => _selectTime(context),
@@ -101,6 +150,7 @@ class _AppointmentFormState extends State<AppointmentForm> {
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
                         ),
                         child: Text(
                           _selectedTime == null
@@ -119,18 +169,31 @@ class _AppointmentFormState extends State<AppointmentForm> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                // Aquí puedes agregar la lógica para agendar la cita
                 final name = _nameController.text;
                 final date = _selectedDate;
                 final time = _selectedTime;
 
                 if (name.isNotEmpty && date != null && time != null) {
-                  // Mostrar un mensaje de éxito o realizar la acción de agendar
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
                       title: Text('Cita Agendada'),
                       content: Text('Cita agendada para $name el ${date.toLocal()} a las ${time.hour}:${time.minute.toString().padLeft(2, '0')}'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('Aceptar'),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  // Mostrar un mensaje de error si faltan campos
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Error'),
+                      content: Text('Por favor, completa todos los campos.'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),

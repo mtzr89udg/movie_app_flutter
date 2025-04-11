@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:firstapp/home.dart';
 
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,11 +13,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Agendar Cita Médica',
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Agendar Cita Médica'),
-        ),
-        body: AppointmentForm(),
+        body: BackgroundImage(),
       ),
     );
   }

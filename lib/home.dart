@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert'; // Para convertir JSON
+import 'covid_data.dart'; // Importa el modelo que creaste
 
 class BackgroundImage extends StatelessWidget {
   @override
@@ -38,6 +41,8 @@ class BackgroundImage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Expanded(child: AppointmentForm()), // Formulario de citas
+            SizedBox(height: 20),
+            Expanded(child: CovidDataWidget()), // Muestra los datos de COVID
           ],
         ),
       ],
@@ -209,6 +214,61 @@ class _AppointmentFormState extends State<AppointmentForm> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class CovidDataWidget extends StatefulWidget {
+  @override
+  _CovidDataWidgetState createState() => _CovidDataWidgetState();
+}
+
+class _CovidDataWidgetState extends State<CovidDataWidget> {
+  CovidData? _covidData;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCovidData();
+  }
+
+  Future<void> _fetchCovidData() async {
+    final response = await http.get(Uri.parse('https://api.covidtracking.com/v1/us/current.json'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      setState(() {
+        _covidData = CovidData.fromJson(data[0]);
+        _loading = false;
+      });
+    } else {
+      throw Exception('Failed to load COVID data');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_loading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return Column(
+      children: [
+        Text(
+          'Datos de COVID-19',
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Nuevos contagios: ${_covidData?.positive ?? 0}',
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
+        Text(
+          'Hospitalizados: ${_covidData?.hospitalized ?? 0}',
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
+      ],
     );
   }
 }

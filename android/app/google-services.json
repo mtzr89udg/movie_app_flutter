@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "301125166728",
+    "project_id": "flutter-app-citas",
+    "storage_bucket": "flutter-app-citas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301125166728:android:612a8b713c3531ddc7e13d",
+        "android_client_info": {
+          "package_name": "com.example.firstapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxQ4vc5jM0pZSBIU9gPrpzZPPE98volI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

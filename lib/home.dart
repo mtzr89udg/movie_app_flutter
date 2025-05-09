@@ -2,6 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para convertir JSON
 import 'covid_data.dart'; // Importa el modelo que creaste
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+Future<void> _agendarCita(String nombre, DateTime fecha, TimeOfDay hora) async {
+  CollectionReference citas = FirebaseFirestore.instance.collection('citas');
+
+  Map<String, dynamic> citaData = {
+    'nombrePaciente': nombre,
+    'fecha': fecha.toIso8601String(), // Guardar la fecha en formato ISO
+    'hora': '${hora.hour}:${hora.minute.toString().padLeft(2, '0')}', // Guardar la hora como string
+    'estado': 'agendada',
+  };
+
+  try {
+    await citas.add(citaData);
+    print("Cita agendada con éxito");
+  } catch (e) {
+    print("Error al agendar la cita: $e");
+  }
+}
+
 
 class BackgroundImage extends StatelessWidget {
   @override
@@ -179,19 +200,24 @@ class _AppointmentFormState extends State<AppointmentForm> {
                 final time = _selectedTime;
 
                 if (name.isNotEmpty && date != null && time != null) {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text('Cita Agendada'),
-                      content: Text('Cita agendada para $name el ${date.toLocal()} a las ${time.hour}:${time.minute.toString().padLeft(2, '0')}'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('Aceptar'),
-                        ),
-                      ],
-                    ),
-                  );
+                  _agendarCita(name, date, time).then((_) {
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          AlertDialog(
+                            title: Text('Cita Agendada'),
+                            content: Text('Cita agendada para $name el ${date
+                                .toLocal()} a las ${time.hour}:${time.minute
+                                .toString().padLeft(2, '0')}'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text('Aceptar'),
+                              ),
+                            ],
+                          ),
+                    );
+                  });
                 } else {
                   // Mostrar un mensaje de error si faltan campos
                   showDialog(

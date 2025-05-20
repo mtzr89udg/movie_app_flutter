@@ -1,14 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:firstapp/home.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
+import 'screens/catalog_screen.dart';
+import 'screens/movie_detail_screen.dart';
+import 'screens/admin_screen.dart';
 
-import 'package:flutter/material.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   runApp(MyApp());
 }
 
@@ -16,11 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Agendar Cita Médica',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: Scaffold(
-        body: BackgroundImage(),
-      ),
+      title: 'Catálogo de Películas',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/login': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+        '/catalog': (context) => CatalogScreen(),
+        '/movieDetail': (context) => MovieDetailScreen(),
+        '/admin': (context) => AdminScreen(),
+      },
     );
   }
 }
